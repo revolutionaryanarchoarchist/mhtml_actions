@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MHTML Archiver</title>
+</head>
+<body>
+    <div class="container">
+        <h1>📄 Save webpage as MHTML</h1>
+        <form method="post">
+            <label>URL *</label>
+            <input type="text" name="url" placeholder="https://example.com" required>
+
+            <label>Title * (no spaces, will be made unique)</label>
+            <input type="text" name="title" placeholder="my_article" required>
+
+            <button type="submit">Trigger Archive</button>
+        </form>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <p class="{{ category }}">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>
