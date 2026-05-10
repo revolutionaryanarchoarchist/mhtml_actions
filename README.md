@@ -93,4 +93,7 @@ User receives a status page and can either download the .mhtml file or view it i
   - Once the action finishes (usually 10–30 seconds), the status page will show Download and View in sandboxed viewer buttons.
   - Click View – the page should open in an iframe with full CSS, images, and scripts (sandboxed).
   - Click Download to save the .mhtml file.
+
+
+ the credit for the core of this project and the general idea of using gihub actions goes to [Kurdeus/Meli-Action](https://github.com/Kurdeus/Meli-Action)
   
