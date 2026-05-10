@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MHTML Archiver - Status</title>
+    <style>
+        body { font-family: sans-serif; margin: 2rem; text-align: center; }
+        .container { max-width: 500px; margin: auto; }
+        #status { font-size: 1.2rem; margin: 1rem; }
+        #download-link { margin-top: 2rem; }
+        .loading { display: inline-block; width: 20px; height: 20px; border: 3px solid #ccc; border-radius: 50%; border-top-color: #333; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📄 Processing your request</h1>
+        <div id="status">Waiting for GitHub Action to complete...</div>
+        <div id="loading" class="loading"></div>
+        <div id="download-link" style="margin-top: 20px;"></div>
+	<div id="view-link" style="margin-top: 10px;"></div>
+    </div>
+
+    <script>
+        const title = "{{ title }}";
+        let pollInterval;
+
+        function checkStatus() {
+            fetch(`/api/status/${encodeURIComponent(title)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "done") {
+                        clearInterval(pollInterval);
+                        document.getElementById("loading").style.display = "none";
+                        document.getElementById("status").innerHTML = "✅ Archive ready!";
+                        const downloadDiv = document.getElementById("download-link");
+			downloadDiv.innerHTML = `<a href="${data.download_url}" class="button">📥 Download MHTML file</a>`;
+			const viewDiv = document.getElementById("view-link");
+			viewDiv.innerHTML = `<a href="${data.download_url}?view=1" target="_blank" class="button">👁️ View in browser</a>`;
+                    } else if (data.status === "error") {
+                        clearInterval(pollInterval);
+                        document.getElementById("loading").style.display = "none";
+                        document.getElementById("status").innerHTML = "❌ Error: Could not retrieve the file.";
+                    } else {
+                        document.getElementById("status").innerHTML = "🔄 Still processing... checking again in 5 seconds.";
+                    }
+                })
+                .catch(() => {
+                    document.getElementById("status").innerHTML = "⚠️ Error checking status. Will retry.";
+                });
+        }
+
+        pollInterval = setInterval(checkStatus, 5000);
+        checkStatus();
+    </script>
+</body>
+</html>
